@@ -21,10 +21,12 @@ This image is useful for taking backups of PostgreSQL databases at regular inter
 
 ## Features
 
-- Based on the latest PostgreSQL official image.
+- Based on a pinned PostgreSQL major version (`PG_BASE_TAG` in the `Dockerfile`). `pg_dumpall` must be at least the major version of the server it dumps.
 - Includes cron for scheduling tasks.
 - Uses tini as the init system for proper process management.
 - Custom entrypoint script to manage cron jobs via an environment variable.
+- Refuses to start without `CRONTAB`.
+- `PGPASSWORD` is written to a `0600` `~/.pgpass`, so the crontab doesn't need the password.
 
 ## Usage
 
