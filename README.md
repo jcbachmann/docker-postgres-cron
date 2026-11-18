@@ -22,6 +22,7 @@ This image is useful for taking backups of PostgreSQL databases at regular inter
 ## Features
 
 - Based on a pinned PostgreSQL major version (`PG_BASE_TAG` in the `Dockerfile`). `pg_dumpall` must be at least the major version of the server it dumps.
+- Also carries the clients of older majors (`PG_EXTRA_CLIENTS`, default `14`): a dump restores reliably only into the major version that wrote it, so a server older than the base is dumped with its own client, by path: `/usr/lib/postgresql/14/bin/pg_dumpall`. Plain `pg_dumpall` stays the base's.
 - Includes cron for scheduling tasks.
 - Uses tini as the init system for proper process management.
 - Custom entrypoint script to manage cron jobs via an environment variable.

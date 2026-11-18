@@ -4,11 +4,18 @@
 ARG PG_BASE_TAG=17-bookworm
 FROM postgres:${PG_BASE_TAG}
 
+# Older clients too, for servers older than the base: a dump restores reliably
+# only into the major version that wrote it. Call one by its path, e.g.
+# /usr/lib/postgresql/14/bin/pg_dumpall; plain pg_dumpall stays the base's.
+# The base's PGDG source lists only its own major: add the others.
+ARG PG_EXTRA_CLIENTS="14"
 RUN true \
+    && sed -i "s/\$/ ${PG_EXTRA_CLIENTS}/" /etc/apt/sources.list.d/pgdg.list \
     && apt update \
     && apt install -y \
         cron \
         tini \
+        $(for v in ${PG_EXTRA_CLIENTS}; do echo postgresql-client-$v; done) \
     && rm -rf /var/lib/apt \
     && true
 
